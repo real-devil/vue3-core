@@ -103,9 +103,9 @@ export class ReactiveEffect<T = any> {
       trackOpBit = 1 << ++effectTrackDepth
 
       if (effectTrackDepth <= maxMarkerBits) {
-        initDepMarkers(this)
+        initDepMarkers(this) // set dep is tracked
       } else {
-        cleanupEffect(this)
+        cleanupEffect(this) // when track array is oversize, you shoule clean up it.
       }
       return this.fn()
     } finally {

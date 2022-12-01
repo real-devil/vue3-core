@@ -18,12 +18,24 @@ export {
   CustomRefFactory
 } from './ref'
 export {
+  /**
+   * get
+   * set、delete、has、ownkey
+   */
   reactive,
   readonly,
   isReactive,
   isReadonly,
   isShallow,
   isProxy,
+  /**
+   * 1、difference one
+   * shallowReactive (include get|set Function)
+   * shallowReadonly (include get Function)
+   * 
+   * 2、difference two
+   * shallowReadonly has uniapp flag
+   */
   shallowReactive,
   shallowReadonly,
   markRaw,

@@ -108,9 +108,16 @@ class RefImpl<T> {
   public dep?: Dep = undefined
   public readonly __v_isRef = true
 
+  // 参数前增加修饰符，表示此属性放到了实例上面
   constructor(value: T, public readonly __v_isShallow: boolean) {
-    this._rawValue = __v_isShallow ? value : toRaw(value)
-    this._value = __v_isShallow ? value : toReactive(value)
+    /**
+     * ES6中的class写法，本身就是使用Object.defineProperty()对对象数据进行劫持
+     * 就是在本身的get、set中操作，就是浅层式响应
+     * 如果操作数据是对象，并想深层响应。可以将value使用Proxy编程响应式的
+     * PS：因为整个响应式系统，都是通过get|set的时候，触发effect进行依赖收集与更新的
+     */
+    this._rawValue = __v_isShallow ? value : toRaw(value) // _rawValue，本身保存的就是原始值，所以不保存响应式对象
+    this._value = __v_isShallow ? value : toReactive(value) // 外放到外面的采用响应式的对象
   }
 
   get value() {
@@ -119,9 +126,17 @@ class RefImpl<T> {
   }
 
   set value(newVal) {
+    /**
+     * useDirectValue 使用直接值，direct直接
+     * 当值为shallow、readonly时，useDirectValue为真
+     */
     const useDirectValue =
       this.__v_isShallow || isShallow(newVal) || isReadonly(newVal)
     newVal = useDirectValue ? newVal : toRaw(newVal)
+    /**
+     * 比较多种值是否相等 Object.is(value1, value2)
+     * 比较基本数据类型，对象依旧是比较对象地址.
+     */
     if (hasChanged(newVal, this._rawValue)) {
       this._rawValue = newVal
       this._value = useDirectValue ? newVal : toReactive(newVal)

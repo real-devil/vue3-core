@@ -40,7 +40,13 @@ export class EffectScope {
       this.index =
         (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(
           this
-        ) - 1
+      ) - 1
+      /**
+       * Array.prototype.push 返回修改后的数组长度
+       * let arr = []
+       * arr.push(2); // 返回1
+       * arr.push(5) - 1; // (length) 2 - 1 = 1
+       */
     }
   }
 
